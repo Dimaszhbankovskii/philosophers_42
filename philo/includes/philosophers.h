@@ -5,6 +5,8 @@
 # include <stdlib.h>
 # include <pthread.h>
 
+# include <stdio.h>
+
 # define ERROR_NUM_ARGS "Invalid number of arguments"
 # define ERROR_VALIDATION_ARGS "Invalid input arguments"
 
@@ -41,9 +43,13 @@ typedef struct s_data
 	int				num_eating;
 	t_mutex			stdout_mutex;
 	long long int	begin_program;
+	t_philosopher	*philos;
+	t_fork			*forks;
 }				t_data;
 
 int		init_data(int argc, char **argv, t_data *data);
+
+int		write_error(char *mess);
 
 size_t	ft_strlen(char const *str);
 int		ft_atoi(char const *str);

@@ -1,12 +1,13 @@
 #include "../includes/philosophers.h"
 
-int	init_forks(t_fork *forks, t_data *data)
+int	init_forks(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	while (i < data->num_philos)
 	{
+		d
 		forks[i].id_fork = i + 1;
 		forks[i].is_busy = 0;
 		if (pthread_mutex_init(&(forks[i].mutex), NULL))
@@ -16,31 +17,31 @@ int	init_forks(t_fork *forks, t_data *data)
 	return (0);
 }
 
-int	init_philosopher(t_philosopher *philos, t_data *data, t_fork *forks)
-{
-	int			i;
-	pthread_t	id_pthread;
+// int	init_philosopher(t_philosopher *philos, t_data *data, t_fork *forks)
+// {
+// 	int			i;
+// 	pthread_t	id_pthread;
 
-	i = 0;
-	while (i < data->num_philos)
-	{
-		philos[i].id_philo = i + 1;
-		philos[i].num_eating = 0;
-		philos[i].left_fork = forks + i;
-		philos[i].right_fork = forks + (i + 1) % data->num_philos;
-		philos[i].stdout_mutex = &data->stdout_mutex;
-		if (pthread_mutex_init(&philos[i].condition_philo, NULL))
-			return (1);
-		// philos[i].last_eating = 
-		philos[i].time_to_eat = data->time_to_eat;
-		philos[i].time_to_sleep = data->time_to_sleep;
-		if (pthread_create(&id_pthread, NULL, &func, &philos[i]))
-			return (1);
-		i++;
-	}
-	pthread_detach(id_pthread);
-	return (0);
-}
+// 	i = 0;
+// 	while (i < data->num_philos)
+// 	{
+// 		philos[i].id_philo = i + 1;
+// 		philos[i].num_eating = 0;
+// 		philos[i].left_fork = forks + i;
+// 		philos[i].right_fork = forks + (i + 1) % data->num_philos;
+// 		philos[i].stdout_mutex = &data->stdout_mutex;
+// 		if (pthread_mutex_init(&philos[i].condition_philo, NULL))
+// 			return (1);
+// 		// philos[i].last_eating = 
+// 		philos[i].time_to_eat = data->time_to_eat;
+// 		philos[i].time_to_sleep = data->time_to_sleep;
+// 		if (pthread_create(&id_pthread, NULL, &func, &philos[i]))
+// 			return (1);
+// 		i++;
+// 	}
+// 	pthread_detach(id_pthread);
+// 	return (0);
+// }
 
 int	init_data(int argc, char **argv, t_data *data)
 {
@@ -61,5 +62,7 @@ int	init_data(int argc, char **argv, t_data *data)
 		data->num_eating = -1;
 	if (pthread_mutex_init(&(data->stdout_mutex), NULL))
 		return (1);
+	data->philos = NULL;
+	data->forks = NULL;
 	return (0);
 }
