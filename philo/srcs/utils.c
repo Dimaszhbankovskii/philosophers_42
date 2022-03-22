@@ -35,3 +35,20 @@ int	ft_atoi(char const *str)
 	}
 	return (num * sign);
 }
+
+long long int	get_time(void)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+}
+
+void	print_mutex(t_philo *philo, char *mess)
+{
+	pthread_mutex_lock(&(philo->data->stdout_mutex));
+	if (!philo->data->death)
+		printf("\033[1;37m[%lld] \033[1;36m%d %s\n", \
+		get_time() - philo->data->start_program, philo->id_philo, mess);
+	pthread_mutex_unlock(&(philo->data->stdout_mutex));
+}

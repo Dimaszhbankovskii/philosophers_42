@@ -10,8 +10,9 @@ SRCS_DIR		=	srcs
 
 SRCS_LIST	=	main.c \
 				init_data.c \
-				manage_error.c \
-				utils.c
+				philo.c \
+				utils.c \
+				end_program.c
 SRCS		=	$(addprefix $(SRCS_DIR)/,$(SRCS_LIST))
 
 OBJS_DIR	=	objs
@@ -34,7 +35,7 @@ WHITE		=	\033[1;37m
 all : $(OBJS_DIR) $(NAME)
 
 $(NAME) : $(OBJS) $(OBJS_FUNC)
-	@$(CC) $(CFLAGS) -o $@ $^
+	@$(CC) $(CFLAGS) -o $@ $^ -lpthread
 	@echo "$(GREEN)Project succesfully compiled"
 
 $(OBJS_DIR)/%.o : $(SRCS_DIR)/%.c $(INCLUDES)/$(HEADER) Makefile
