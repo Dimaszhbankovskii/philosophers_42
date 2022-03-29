@@ -2,6 +2,10 @@ NAME	=	philo
 
 CC		=	gcc
 CFLAGS	=	-Wall -Werror -Wextra
+THREAD	=	-pthread -lpthread
+
+CHECK_THREAD	=	-g3 -fsanitize=thread
+CHECK_LEAKS		=	-g3 -fsanitize=address -static-libasan
 
 INCLUDES	=	includes
 HEADER		=	philosophers.h
@@ -9,16 +13,19 @@ HEADER		=	philosophers.h
 SRCS_DIR		=	srcs
 
 SRCS_LIST	=	main.c \
+				input_validation.c \
 				init_data.c \
-				philo.c \
+				init_philos.c \
+				philo_life.c \
+				philo_eating.c \
 				utils.c \
-				end_program.c
+				error.c \
+				clear.c
 SRCS		=	$(addprefix $(SRCS_DIR)/,$(SRCS_LIST))
 
 OBJS_DIR	=	objs
 
 OBJS		=	$(addprefix $(OBJS_DIR)/,$(SRCS_LIST:.c=.o))
-OBJS_FUNC	=	$(addprefix $(OBJS_DIR)/,$(SRCS_LIST_FUNC:.c=.o))
 
 NORMAL		=	\033[0m
 BOLD		=	\033[1m
@@ -34,17 +41,25 @@ WHITE		=	\033[1;37m
 
 all : $(OBJS_DIR) $(NAME)
 
-$(NAME) : $(OBJS) $(OBJS_FUNC)
-	@$(CC) $(CFLAGS) -o $@ $^ -lpthread
+$(NAME) : $(OBJS)
+	@$(CC) $(CFLAGS) $(THREAD) -o $@ $^
 	@echo "$(GREEN)Project succesfully compiled"
 
 $(OBJS_DIR)/%.o : $(SRCS_DIR)/%.c $(INCLUDES)/$(HEADER) Makefile
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(THREAD) -c $< -o $@
 	@echo "$(BLUE)Creating object file$(WHITE) --> $(notdir $@) --> $(GREEN)[Done]$(NORMAL)"
 
 $(OBJS_DIR) :
 	@mkdir -p objs
 	@echo "$(CYAN)Creating directory for objects file$(WHITE) --> $@ --> $(GREEN)[Done]$(NORMAL)"
+
+check_leaks : $(OBJS_DIR) $(OBJS)
+	@$(CC) $(CFLAGS) $(THREAD) $(CHECK_LEAKS) -o $(NAME) $(OBJS)
+	@echo "$(GREEN)Project succesfully compiled with fsanitize checking leaks"
+
+check_threads : $(OBJS_DIR) $(OBJS)
+	@$(CC) $(CFLAGS) $(THREAD) $(CHECK_THREAD) -o $(NAME) $(OBJS)
+	@echo "$(GREEN)Project succesfully compiled with fsanitize checking threads"
 
 clean :
 	@rm -rf $(OBJS_DIR)

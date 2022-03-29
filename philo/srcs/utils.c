@@ -46,9 +46,11 @@ long long int	get_time(void)
 
 void	print_mutex(t_philo *philo, char *mess)
 {
-	pthread_mutex_lock(&(philo->data->stdout_mutex));
+	pthread_mutex_lock(&(philo->data->mutex_stdout));
+	pthread_mutex_lock(&(philo->data->mutex_death));
 	if (!philo->data->death)
-		printf("\033[1;37m[%lld] \033[1;36m%d %s\n", \
+		printf("\033[1;37m[%lld] \033[1;36m%d %s\n", 
 		get_time() - philo->data->start_program, philo->id_philo, mess);
-	pthread_mutex_unlock(&(philo->data->stdout_mutex));
+	pthread_mutex_unlock(&(philo->data->mutex_death));
+	pthread_mutex_unlock(&(philo->data->mutex_stdout));
 }
