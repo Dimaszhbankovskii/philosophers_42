@@ -24,17 +24,18 @@ int	philo_sleeping(t_philo *philo) // возможно нужна доп про�
 	if (!check_condition_philo(philo))
 		return (0);
 	print_mutex(philo, SLEEPING);
-	usleep(philo->args.time_to_sleep);
-	return (1);
-}
-
-int	philo_thinking(t_philo *philo) // возможно нужна доп проверка, что философ жив
-{
-	if (!check_condition_philo(philo))
-		return (0);
+	ft_sleep(philo->args.time_to_sleep);
 	print_mutex(philo, THINKING);
 	return (1);
 }
+
+// int	philo_thinking(t_philo *philo) // возможно нужна доп проверка, что философ жив
+// {
+// 	if (!check_condition_philo(philo))
+// 		return (0);
+// 	print_mutex(philo, THINKING);
+// 	return (1);
+// }
 
 void	*philo_life(void *args)
 {
@@ -49,8 +50,8 @@ void	*philo_life(void *args)
 			break ;
 		if (!philo_sleeping(philo))
 			break ;
-		if (!philo_thinking(philo))
-			break ;
+		// if (!philo_thinking(philo))
+		// 	break ;
 	}
 	return (NULL);
 }
@@ -62,7 +63,7 @@ void	*unique_philo_life(void *args)
 	philo = (t_philo *)args;
 	pthread_mutex_lock(&philo->right_fork->fork_mutex);
 	print_mutex(philo, TAKE_FORK);
-	usleep(philo->args.time_to_die * 1000);
+	ft_sleep(philo->args.time_to_die);
 	print_mutex(philo, "was died");
 	pthread_mutex_unlock(&philo->right_fork->fork_mutex);
 	return (NULL);

@@ -100,6 +100,7 @@ int		write_error(char *mess, int code); // +
 size_t			ft_strlen(char const *str); // +
 int				ft_atoi(char const *str); // +
 long long int	get_time(void);
+void			ft_sleep(unsigned long time_ms);
 void			print_mutex(t_philo *philo, char *mess);
 
 #endif

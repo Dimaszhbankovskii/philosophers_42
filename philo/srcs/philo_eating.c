@@ -39,14 +39,14 @@ int	drop_forks(t_philo *philo)
 
 int	philo_eating(t_philo *philo)
 {
-	if (take_forks(philo))
+	if (!take_forks(philo))
 		return (0);
 	print_mutex(philo, EATING);
 	pthread_mutex_lock(&(philo->condition_mutex));
 	philo->count_meals++;
 	philo->last_eating = get_time();
 	pthread_mutex_unlock(&(philo->condition_mutex));
-	usleep(philo->args.time_to_eat);
+	ft_sleep(philo->args.time_to_eat);
 	drop_forks(philo);
 	return (1);
 }
