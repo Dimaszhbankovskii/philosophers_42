@@ -1,17 +1,5 @@
 #include "../includes/philosophers.h"
 
-// static int	init_unique_philo(t_philo *philo, t_data *data)
-// {
-// 	(*philo).args.num_philos = data->args.num_philos;
-// 	(*philo).args.time_to_die = data->args.time_to_die;
-// 	(*philo).args.time_to_eat = data->args.time_to_eat;
-// 	(*philo).args.time_to_sleep = data->args.time_to_sleep;
-// 	(*philo).args.num_meals = data->args.num_meals;
-// 	(*philo).id_philo = i + 1;
-// 	(*philo).count_meals = 0;
-// 	(*philo).data = data;
-// }
-
 static int	init_philos(t_philo *philos, t_data *data)
 {
 	int	i;
@@ -44,18 +32,11 @@ int	parsing_philos(t_philo *philos, t_data *data)
 {
 	int	res;
 
-	// if (data->args.num_philos == 1)
-	// {
-	// 	init_unique_philo(philos, data);
-	// }
-	// else
-	// {
 	res = init_philos(philos, data);
 	if (res)
 	{
 		clear_philos(philos, res);
 		return (1);
 	}
-	// }
 	return (0);
 }

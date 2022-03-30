@@ -86,8 +86,7 @@ int		parsing_philos(t_philo *philos, t_data *data); // +
 
 void	*unique_philo_life(void *args);
 void	*philo_life(void *args);
-int		philo_eating(t_philo *philo);
-int		check_condition_philo(t_philo *philo);
+// int		check_condition_philo(t_philo *philo);
 
 
 void	clear_all(t_data *data, t_philo *philos); // +

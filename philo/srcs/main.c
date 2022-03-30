@@ -27,8 +27,11 @@ int	init_data(t_data **data, t_philo **philos, int argc, char **argv)
 
 int	check_death(t_data *data, t_philo *philo)
 {
+	long long int	time;
+
+	time = get_time();
 	pthread_mutex_lock(&(philo->condition_mutex));
-	if (get_time() - philo->last_eating >= data->args.time_to_die)
+	if (time - philo->last_eating >= data->args.time_to_die)
 	{
 		pthread_mutex_unlock(&(philo->condition_mutex));
 		return (1);

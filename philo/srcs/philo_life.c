@@ -1,6 +1,6 @@
 #include "../includes/philosophers.h"
 
-int	check_condition_philo(t_philo *philo)
+static int	check_condition_philo(t_philo *philo)
 {
 	pthread_mutex_lock(&(philo->data->mutex_death));
 	if (philo->data->death)
@@ -9,33 +9,47 @@ int	check_condition_philo(t_philo *philo)
 		return (0);
 	}
 	pthread_mutex_unlock(&(philo->data->mutex_death));
-	pthread_mutex_lock(&(philo->data->mutex_all_ate));
-	if (philo->data->all_ate)
-	{
-		pthread_mutex_unlock(&(philo->data->mutex_all_ate));
-		return (0);
-	}
-	pthread_mutex_unlock(&(philo->data->mutex_all_ate));
+	// pthread_mutex_lock(&(philo->data->mutex_all_ate));
+	// if (philo->data->all_ate)
+	// {
+	// 	pthread_mutex_unlock(&(philo->data->mutex_all_ate));
+	// 	return (0);
+	// }
+	// pthread_mutex_unlock(&(philo->data->mutex_all_ate));
 	return (1);
 }
 
-int	philo_sleeping(t_philo *philo) // возможно нужна доп проверка, что философ жив
-{
-	if (!check_condition_philo(philo))
-		return (0);
-	print_mutex(philo, SLEEPING);
-	ft_sleep(philo->args.time_to_sleep);
-	print_mutex(philo, THINKING);
-	return (1);
-}
-
-// int	philo_thinking(t_philo *philo) // возможно нужна доп проверка, что философ жив
+// void	update_time_last_meal(t_philo *philo, int flag)
 // {
-// 	if (!check_condition_philo(philo))
-// 		return (0);
-// 	print_mutex(philo, THINKING);
-// 	return (1);
+// 	philo->last_eating = philo->last_eating + 
+// 	(philo->) * flag;
 // }
+
+static void	philo_eating(t_philo *philo)
+{
+	t_fork	*min_fork;
+	t_fork	*max_fork;
+
+	min_fork = philo->right_fork;
+	max_fork = philo->left_fork;
+	if (philo->right_fork->id_fork > philo->left_fork->id_fork)
+	{
+		min_fork = philo->left_fork;
+		max_fork = philo->right_fork;
+	}
+	pthread_mutex_lock(&min_fork->fork_mutex);
+	print_mutex(philo, TAKE_FORK);
+	pthread_mutex_lock(&max_fork->fork_mutex);
+	print_mutex(philo, TAKE_FORK);
+	print_mutex(philo, EATING);
+	pthread_mutex_lock(&(philo->condition_mutex));
+	philo->count_meals++;
+	philo->last_eating = get_time();
+	pthread_mutex_unlock(&(philo->condition_mutex));
+	ft_sleep(philo->args.time_to_eat);
+	pthread_mutex_unlock(&max_fork->fork_mutex);
+	pthread_mutex_unlock(&min_fork->fork_mutex);
+}
 
 void	*philo_life(void *args)
 {
@@ -46,12 +60,12 @@ void	*philo_life(void *args)
 		usleep(2500);
 	while (1)
 	{
-		if (!philo_eating(philo))
+		if (!check_condition_philo(philo))
 			break ;
-		if (!philo_sleeping(philo))
-			break ;
-		// if (!philo_thinking(philo))
-		// 	break ;
+		philo_eating(philo);
+		print_mutex(philo, SLEEPING);
+		ft_sleep(philo->args.time_to_sleep);
+		print_mutex(philo, THINKING);
 	}
 	return (NULL);
 }

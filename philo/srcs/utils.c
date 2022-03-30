@@ -68,3 +68,8 @@ void	print_mutex(t_philo *philo, char *mess)
 	pthread_mutex_unlock(&(philo->data->mutex_death));
 	pthread_mutex_unlock(&(philo->data->mutex_stdout));
 }
+
+// void	update_time_last_meal(long long *time, t_data *philo, int flaf_sleep)
+// {
+
+// }

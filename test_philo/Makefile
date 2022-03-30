@@ -8,18 +8,12 @@ CHECK_THREAD	=	-g3 -fsanitize=thread
 CHECK_LEAKS		=	-g3 -fsanitize=address -static-libasan
 
 INCLUDES	=	includes
-HEADER		=	philosophers.h
+HEADER		=	philosopher.h
 
 SRCS_DIR		=	srcs
 
 SRCS_LIST	=	main.c \
-				input_validation.c \
-				init_data.c \
-				init_philos.c \
-				philo_life.c \
-				utils.c \
-				error.c \
-				clear.c
+				philosopher.c
 SRCS		=	$(addprefix $(SRCS_DIR)/,$(SRCS_LIST))
 
 OBJS_DIR	=	objs
