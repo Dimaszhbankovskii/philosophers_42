@@ -1,5 +1,6 @@
 #include "../includes/philosophers.h"
 
+// +++
 void	clear_forks(t_data *data, int n)
 {
 	int	i;
@@ -9,7 +10,7 @@ void	clear_forks(t_data *data, int n)
 		i = 0;
 		while (i < n)
 		{
-			pthread_mutex_destroy(&(data->forks[i].fork_mutex));
+			pthread_mutex_destroy(&(data->forks[i]));
 			i++;
 		}
 		free (data->forks);
@@ -17,13 +18,15 @@ void	clear_forks(t_data *data, int n)
 	}
 }
 
+// +++ (можно убрать)
 void	clear_data_mutex(t_data *data)
 {
 	pthread_mutex_destroy(&(data->mutex_stdout));
-	pthread_mutex_destroy(&(data->mutex_death));
-	pthread_mutex_destroy(&(data->mutex_all_ate));
+	// pthread_mutex_destroy(&(data->mutex_death));
+	// pthread_mutex_destroy(&(data->mutex_all_ate));
 }
 
+// +++
 void	clear_philos(t_philo *philos, int n)
 {
 	int	i;
@@ -40,6 +43,7 @@ void	clear_philos(t_philo *philos, int n)
 	}
 }
 
+// +++
 void	clear_all(t_data *data, t_philo *philos)
 {
 	if (philos)

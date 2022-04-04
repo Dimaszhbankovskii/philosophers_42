@@ -1,5 +1,6 @@
 #include "../includes/philosophers.h"
 
+// +++
 int	init_data(t_data **data, t_philo **philos, int argc, char **argv)
 {
 	*data = (t_data *)malloc(sizeof(t_data));
@@ -25,65 +26,33 @@ int	init_data(t_data **data, t_philo **philos, int argc, char **argv)
 	return (0);
 }
 
-int	check_death(t_data *data, t_philo *philo)
-{
-	long long int	time;
-
-	time = get_time();
-	pthread_mutex_lock(&(philo->condition_mutex));
-	if (time - philo->last_eating >= data->args.time_to_die)
-	{
-		pthread_mutex_unlock(&(philo->condition_mutex));
-		return (1);
-	}
-	pthread_mutex_unlock(&(philo->condition_mutex));
-	return (0);
-}
-
-// int	check_meals(t_data *data, t_philo *philo)
-// {
-// 	pthread_mutex_lock(&(philo->condition_mutex));
-// 	if (philo->count_meals >= )
-// 	return (0);
-// }
-
-int	simulation(t_data *data, t_philo *philos)
+// +++
+static void	simulation(t_data *data, t_philo *philos)
 {
 	int	i;
-	// int	philos_ate;
+	int	philos_ate;
 
-	while (1)
+	while (!data->death)
 	{
+		usleep(3000);
 		i = 0;
-		// philos_ate = 0;
-		while (i < data->args.num_philos)
+		philos_ate = 0;
+		while (i < data->args.num_philos && !data->death)
 		{
-			if (check_death(data, &philos[i]))
+			pthread_mutex_lock(&philos[i].condition_mutex);
+			if (get_time() > philos[i].die_time)
 			{
-				print_mutex(&philos[i], "was died");
-				pthread_mutex_lock(&data->mutex_death);
+				print_mutex(&philos[i], DIE);
 				data->death = 1;
-				pthread_mutex_unlock(&data->mutex_death);
-				return (0);
 			}
-			// if (data->args.num_meals > 0)
-			// {
-			// 	pthread_mutex_lock(&philos[i].condition_mutex);
-			// 	if (philos[i].count_meals >= data->args.num_meals)
-			// 		philos_ate++;
-			// 	pthread_mutex_unlock(&philos[i].condition_mutex);
-			// }
-			// if (philos_ate == data->args.num_philos)
-			// {
-			// 	pthread_mutex_lock(&data->mutex_all_ate);
-			// 	data->all_ate = 1;
-			// 	pthread_mutex_unlock(&data->mutex_all_ate);
-			// 	break ;
-			// }
+			if (philos[i].count_meals >= data->args.num_meals)
+				philos_ate++;
+			pthread_mutex_unlock(&philos[i].condition_mutex);
 			i++;
 		}
+		if (data->args.num_meals > 0 && philos_ate == data->args.num_philos)
+			data->death = 1;
 	}
-	return (0);
 }
 
 int	philo_thread(t_data *data, t_philo *philos)
@@ -94,15 +63,13 @@ int	philo_thread(t_data *data, t_philo *philos)
 	data->start_program = get_time();
 	while (i < data->args.num_philos)
 	{
-		philos[i].last_eating = get_time();
+		philos[i].die_time = data->start_program + data->args.time_to_die;
 		if (pthread_create(&(philos[i].pid_pthread), NULL,
 		&philo_life, &(philos[i])))
 			return (1);
 		i++;
 	}
-	// функция мониторинга
 	simulation(data, philos);
-	// функция присоединения потоков
 	i = 0;
 	while (i < data->args.num_philos)
 	{
@@ -115,7 +82,7 @@ int	philo_thread(t_data *data, t_philo *philos)
 int	unique_philo_thread(t_data *data, t_philo *philo)
 {
 	data->start_program = get_time();
-	philo->last_eating = data->start_program;
+	philo->die_time = data->start_program + data->args.time_to_die;
 	if (pthread_create(&(philo->pid_pthread), NULL, \
 	&unique_philo_life, philo))
 		return (1);
@@ -150,9 +117,6 @@ int main(int argc, char **argv)
 			return (1);
 		}
 	}
-
-	// simulation(data, philos);
-
 	clear_all(data, philos);
 	return (0);
 }

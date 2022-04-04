@@ -36,6 +36,20 @@ int	ft_atoi(char const *str)
 	return (num * sign);
 }
 
+void	ft_sleep(long long time_ms)
+{
+	long long	start_time;
+	long long	current_time;
+
+	start_time = get_time();
+	current_time = start_time;
+	while (current_time - start_time < time_ms)
+	{
+		usleep(50);
+		current_time = get_time();
+	}
+}
+
 long long int	get_time(void)
 {
 	struct timeval	time;
@@ -44,32 +58,11 @@ long long int	get_time(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-void	ft_sleep(unsigned long time_ms)
-{
-	unsigned long int	start_time;
-	unsigned long int	current_time;
-
-	start_time = get_time();
-	current_time = start_time;
-	while (current_time - start_time < time_ms)
-	{
-		current_time = get_time();
-		usleep(time_ms);
-	}
-}
-
 void	print_mutex(t_philo *philo, char *mess)
 {
 	pthread_mutex_lock(&(philo->data->mutex_stdout));
-	pthread_mutex_lock(&(philo->data->mutex_death));
 	if (!philo->data->death)
-		printf("\033[1;37m%lld \033[1;36m%d %s\n", \
-		get_time() - philo->data->start_program, philo->id_philo, mess);
-	pthread_mutex_unlock(&(philo->data->mutex_death));
+		printf("\033[0;37m%5lld\033[0m \033[1;36m%d\033[0m %s\n", \
+		get_time() - philo->data->start_program, philo->id_philo + 1, mess);
 	pthread_mutex_unlock(&(philo->data->mutex_stdout));
 }
-
-// void	update_time_last_meal(long long *time, t_data *philo, int flaf_sleep)
-// {
-
-// }

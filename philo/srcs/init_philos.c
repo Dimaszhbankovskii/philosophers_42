@@ -1,5 +1,6 @@
 #include "../includes/philosophers.h"
 
+// +++
 static int	init_philos(t_philo *philos, t_data *data)
 {
 	int	i;
@@ -12,15 +13,14 @@ static int	init_philos(t_philo *philos, t_data *data)
 		philos[i].args.time_to_eat = data->args.time_to_eat;
 		philos[i].args.time_to_sleep = data->args.time_to_sleep;
 		philos[i].args.num_meals = data->args.num_meals;
-		philos[i].id_philo = i + 1;
+		philos[i].id_philo = i;
 		philos[i].count_meals = 0;
 		philos[i].data = data;
-		if (i == data->args.num_philos - 1)
-			philos[i].first_right = 0;
+		philos[i].fork1 = data->forks + (i + i % 2) % data->args.num_philos;
+		if (data->args.num_philos != 1)
+			philos[i].fork2 = data->forks + (i + 1 - i % 2) % data->args.num_philos;
 		else
-			philos[i].first_right = 1;
-		philos[i].right_fork = data->forks + i;
-		philos[i].left_fork = data->forks + (i + 1) % data->args.num_philos;
+			philos[i].fork2 = NULL;
 		if (pthread_mutex_init(&(philos[i].condition_mutex), NULL))
 			return (i);
 		i++;
@@ -28,6 +28,7 @@ static int	init_philos(t_philo *philos, t_data *data)
 	return (0);
 }
 
+// +++
 int	parsing_philos(t_philo *philos, t_data *data)
 {
 	int	res;
