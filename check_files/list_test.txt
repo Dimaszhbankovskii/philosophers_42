@@ -1,0 +1,31 @@
+1.	Check Makefile	+++
+2.	Check Norm		+++
+3.	Check test of checklist	---
+	+ ./philo 1 800 200 200 => should die
+	+ ./philo 5 800 200 200 => not should die
+	+ ./philo 5 800 200 200 7 => not should die, all must eat
+	+ ./philo 4 410 200 200 => not should die
+	+ ./philo 4 310 200 100 => should die
+	+ ./philo 2 205 100 100 => not should die
+4.	Check test of checklist with sanitizer threads (check data race) ---
+	+ ./philo 1 800 200 200 => should die
+	+ ./philo 5 800 200 200 => not should die
+	+ ./philo 5 800 200 200 7 => not should die, all must eat
+	+ ./philo 4 410 200 200 => not should die
+	+ ./philo 4 310 200 100 => should die
+	+ ./philo 2 205 100 100 => not should die
+	+ ./philo 4 410 200 0 => not should die
+	+ ./philo 4 410 0 100 => not should die
+5.	Check leaks ---
+	+ ./philo 1 800 200 200 => should die
+	+ ./philo 5 800 200 200 3 => not should die, all must eat
+	+ ./philo 4 310 200 100 => should die
+	+ ./philo 0 310 200 100
+	+ ./philo 10 -15 100 0 9
+	+ ./philo 10 22
+	+ ./philo asd 44as 55 6
+6.	Check managment error
+	+ ./philo 0 310 200 100 => invalid value of arguments
+	+ ./philo 10 -15 100 0 9 => invalid input arguments
+	+ ./philo 10 22 => invalid namber of arguments
+	+ ./philo asd 44as 55 6 => invalid input arguments

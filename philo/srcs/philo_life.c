@@ -13,7 +13,6 @@ static void	philo_eating(t_philo *philo)
 	pthread_mutex_unlock(&(philo->condition_mutex));
 	if (!philo->data->death)
 		ft_sleep(philo->args.time_to_eat);
-		// usleep(philo->args.time_to_eat * 1000); // кастомный usleep
 	pthread_mutex_unlock(philo->fork1);
 	pthread_mutex_unlock(philo->fork2);
 }
@@ -29,7 +28,6 @@ void	*philo_life(void *args)
 		print_mutex(philo, SLEEPING);
 		if (!philo->data->death)
 			ft_sleep(philo->args.time_to_sleep);
-			// usleep(philo->args.time_to_sleep * 1000); // кастомный usleep
 		print_mutex(philo, THINKING);
 	}
 	return (NULL);
@@ -42,7 +40,7 @@ void	*unique_philo_life(void *args)
 	philo = (t_philo *)args;
 	pthread_mutex_lock(philo->fork1);
 	print_mutex(philo, TAKE_FORK);
-	usleep(philo->args.time_to_die * 1000); // кастомный usleep
+	ft_sleep(philo->args.time_to_die);
 	print_mutex(philo, DIE);
 	pthread_mutex_unlock(philo->fork1);
 	return (NULL);

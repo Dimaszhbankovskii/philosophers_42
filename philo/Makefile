@@ -4,8 +4,7 @@ CC		=	gcc
 CFLAGS	=	-Wall -Werror -Wextra
 THREAD	=	-pthread -lpthread
 
-CHECK_THREAD	=	-g3 -fsanitize=thread
-CHECK_LEAKS		=	-g3 -fsanitize=address -static-libasan
+THREAD_SANITIZER	=	-g3 -fsanitize=thread
 
 INCLUDES	=	includes
 HEADER		=	philosophers.h
@@ -52,12 +51,8 @@ $(OBJS_DIR) :
 	@mkdir -p objs
 	@echo "$(CYAN)Creating directory for objects file$(WHITE) --> $@ --> $(GREEN)[Done]$(NORMAL)"
 
-check_leaks : $(OBJS_DIR) $(OBJS)
-	@$(CC) $(CFLAGS) $(THREAD) $(CHECK_LEAKS) -o $(NAME) $(OBJS)
-	@echo "$(GREEN)Project succesfully compiled with fsanitize checking leaks"
-
 check_threads : $(OBJS_DIR) $(OBJS)
-	@$(CC) $(CFLAGS) $(THREAD) $(CHECK_THREAD) -o $(NAME) $(OBJS)
+	@$(CC) $(CFLAGS) $(THREAD) $(THREAD_SANITIZER) -o $(NAME) $(OBJS)
 	@echo "$(GREEN)Project succesfully compiled with fsanitize checking threads"
 
 clean :
@@ -70,4 +65,4 @@ fclean : clean
 
 re : fclean all
 
-.PHONY : all, clean, fclean, re, bonus
+.PHONY : all, clean, fclean, re, check_threads

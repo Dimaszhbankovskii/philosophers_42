@@ -20,9 +20,9 @@
 # define EATING "\033[1;32mis eating\033[0m"
 # define SLEEPING "\033[1;35mis sleeping\033[0m"
 # define THINKING "\033[1;36mis thinking\033[0m"
-# define DIE "\033[1;31mwas died\033[0m"
+# define DIE "\033[1;31mdied\033[0m"
 
-typedef pthread_mutex_t t_mutex;
+typedef pthread_mutex_t	t_mutex;
 
 typedef struct s_args
 {
@@ -55,24 +55,22 @@ typedef struct s_philo
 	pthread_t		pid_pthread;
 }				t_philo;
 
-int		validation_input_data(int argc, char **argv);
-int		parsing_data(t_data *data, int argc, char **argv); // +
-int		parsing_philos(t_philo *philos, t_data *data); // +
+int			validation_input_data(int argc, char **argv);
+int			init_data(t_data **data, t_philo **philos, int argc, char **argv);
+int			parsing_philos(t_philo *philos, t_data *data);
 
-void	*unique_philo_life(void *args);
-void	*philo_life(void *args);
+void		*unique_philo_life(void *args);
+void		*philo_life(void *args);
 
-void	clear_all(t_data *data, t_philo *philos);
-void	clear_philos(t_philo *philos, int n);
-void	clear_forks(t_data *data, int n);
-void	clear_data_mutex(t_data *data);
+void		clear_all(t_data *data, t_philo *philos);
+void		clear_philos(t_philo *philos, int n);
+void		clear_forks(t_data *data, int n);
 
-int		write_error(char *mess, int code);
-
-size_t			ft_strlen(char const *str);
-int				ft_atoi(char const *str);
-long long int	get_time(void);
-void			ft_sleep(long long time_ms);
-void			print_mutex(t_philo *philo, char *mess);
+int			write_error(char *mess, int code);
+size_t		ft_strlen(char const *str);
+int			ft_atoi(char const *str);
+long long	get_time(void);
+void		ft_sleep(long long time_ms);
+void		print_mutex(t_philo *philo, char *mess);
 
 #endif

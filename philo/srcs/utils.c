@@ -50,7 +50,7 @@ void	ft_sleep(long long time_ms)
 	}
 }
 
-long long int	get_time(void)
+long long	get_time(void)
 {
 	struct timeval	time;
 

@@ -1,32 +1,5 @@
 #include "../includes/philosophers.h"
 
-// +++
-int	init_data(t_data **data, t_philo **philos, int argc, char **argv)
-{
-	*data = (t_data *)malloc(sizeof(t_data));
-	if (!*data)
-		return (write_error(ERROR_MALLOC_DATA, 1));
-	if (parsing_data(*data, argc, argv))
-	{
-		free (*data);
-		return (1);
-	}
-	*philos = (t_philo *)malloc(sizeof(t_philo) * \
-	(*data)->args.num_philos);
-	if (!*philos)
-	{
-		clear_all(*data, NULL);
-		return (write_error(ERROR_MALLOC_PHILOS, 1));
-	}
-	if (parsing_philos(*philos, *data))
-	{
-		clear_all(*data, NULL);
-		return (write_error(ERROR_INIT_PHILOS, 1));
-	}
-	return (0);
-}
-
-// +++
 static void	simulation(t_data *data, t_philo *philos)
 {
 	int	i;
@@ -55,7 +28,7 @@ static void	simulation(t_data *data, t_philo *philos)
 	}
 }
 
-int	philo_thread(t_data *data, t_philo *philos)
+static int	philo_thread(t_data *data, t_philo *philos)
 {
 	int	i;
 
@@ -64,8 +37,8 @@ int	philo_thread(t_data *data, t_philo *philos)
 	while (i < data->args.num_philos)
 	{
 		philos[i].die_time = data->start_program + data->args.time_to_die;
-		if (pthread_create(&(philos[i].pid_pthread), NULL,
-		&philo_life, &(philos[i])))
+		if (pthread_create(&philos[i].pid_pthread, NULL, \
+		&philo_life, &philos[i]))
 			return (1);
 		i++;
 	}
@@ -79,7 +52,7 @@ int	philo_thread(t_data *data, t_philo *philos)
 	return (0);
 }
 
-int	unique_philo_thread(t_data *data, t_philo *philo)
+static int	unique_philo_thread(t_data *data, t_philo *philo)
 {
 	data->start_program = get_time();
 	philo->die_time = data->start_program + data->args.time_to_die;
@@ -90,17 +63,8 @@ int	unique_philo_thread(t_data *data, t_philo *philo)
 	return (0);
 }
 
-int main(int argc, char **argv)
+static int	start_proccess(t_data *data, t_philo *philos)
 {
-	t_data	*data;
-	t_philo	*philos;
-
-	if (argc < 5 || argc > 6)							// +
-		return (write_error(ERROR_NUM_ARGS, 1));
-	if (validation_input_data(argc, argv))				// +
-		return (write_error(ERROR_INVALID_ARGS, 1));
-	if (init_data(&data, &philos, argc, argv))			// +
-		return (1);
 	if (data->args.num_philos == 1)
 	{
 		if (unique_philo_thread(data, philos))
@@ -117,6 +81,22 @@ int main(int argc, char **argv)
 			return (1);
 		}
 	}
+	return (0);
+}
+
+int	main(int argc, char **argv)
+{
+	t_data	*data;
+	t_philo	*philos;
+
+	if (argc < 5 || argc > 6)
+		return (write_error(ERROR_NUM_ARGS, 1));
+	if (validation_input_data(argc, argv))
+		return (write_error(ERROR_INVALID_ARGS, 1));
+	if (init_data(&data, &philos, argc, argv))
+		return (1);
+	if (start_proccess(data, philos))
+		return (1);
 	clear_all(data, philos);
 	return (0);
 }

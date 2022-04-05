@@ -1,6 +1,5 @@
 #include "../includes/philosophers.h"
 
-// +++
 static int	define_data(t_data *data, int argc, char **argv)
 {
 	data->args.num_philos = ft_atoi(argv[1]);
@@ -22,7 +21,6 @@ static int	define_data(t_data *data, int argc, char **argv)
 	return (0);
 }
 
-// +++
 static int	init_forks(t_data *data)
 {
 	int	i;
@@ -41,7 +39,6 @@ static int	init_forks(t_data *data)
 	return (0);
 }
 
-// +++
 static int	define_forks(t_data *data)
 {
 	int	res;
@@ -55,8 +52,7 @@ static int	define_forks(t_data *data)
 	return (0);
 }
 
-// +++
-int	parsing_data(t_data *data, int argc, char **argv)
+static int	parsing_data(t_data *data, int argc, char **argv)
 {
 	if (define_data(data, argc, argv))
 		return (write_error(ERROR_INVALID_VALUE_DATA, 1));
@@ -66,6 +62,31 @@ int	parsing_data(t_data *data, int argc, char **argv)
 	{
 		clear_forks(data, data->args.num_philos);
 		return (write_error(ERROR_DATA_MUTEX, 1));
+	}
+	return (0);
+}
+
+int	init_data(t_data **data, t_philo **philos, int argc, char **argv)
+{
+	*data = (t_data *)malloc(sizeof(t_data));
+	if (!*data)
+		return (write_error(ERROR_MALLOC_DATA, 1));
+	if (parsing_data(*data, argc, argv))
+	{
+		free (*data);
+		return (1);
+	}
+	*philos = (t_philo *)malloc(sizeof(t_philo) * \
+	(*data)->args.num_philos);
+	if (!*philos)
+	{
+		clear_all(*data, NULL);
+		return (write_error(ERROR_MALLOC_PHILOS, 1));
+	}
+	if (parsing_philos(*philos, *data))
+	{
+		clear_all(*data, NULL);
+		return (write_error(ERROR_INIT_PHILOS, 1));
 	}
 	return (0);
 }

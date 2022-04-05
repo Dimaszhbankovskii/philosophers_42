@@ -1,6 +1,5 @@
 #include "../includes/philosophers.h"
 
-// +++
 static int	init_philos(t_philo *philos, t_data *data)
 {
 	int	i;
@@ -18,7 +17,8 @@ static int	init_philos(t_philo *philos, t_data *data)
 		philos[i].data = data;
 		philos[i].fork1 = data->forks + (i + i % 2) % data->args.num_philos;
 		if (data->args.num_philos != 1)
-			philos[i].fork2 = data->forks + (i + 1 - i % 2) % data->args.num_philos;
+			philos[i].fork2 = data->forks + \
+			(i + 1 - i % 2) % data->args.num_philos;
 		else
 			philos[i].fork2 = NULL;
 		if (pthread_mutex_init(&(philos[i].condition_mutex), NULL))
@@ -28,7 +28,6 @@ static int	init_philos(t_philo *philos, t_data *data)
 	return (0);
 }
 
-// +++
 int	parsing_philos(t_philo *philos, t_data *data)
 {
 	int	res;
